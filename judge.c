@@ -10,10 +10,11 @@ int main(int argc, char const *argv[])
 	return 0;
 }
 
-int judge(int x, int y)
+int judge(int x_min, int x_max, int y_min, int y_max)
 {
 	//触摸板分割为9个区块，依次对应1-9
-
+	x = x_max - x_min;
+	y = y_max - y_min;
 	if (x0 <= x/3 && y0 <= y/3)
 		n = 1;
 	else if (x0 <= x/3 && y0 <= 2*y/3)
