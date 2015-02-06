@@ -10,7 +10,7 @@ int main(int argc, char * argv[])
 	regmatch_t pmatch[1];
 	const size_t nmatch = 1;
 	regex_t = reg;
-	const char * pattern = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*.\\w+([-x]\\w+)&$";
+	const char * pattern = "\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*.\\w+([-x]\\w+)*$";
 	char * buf = "djaflkkfajl@gmail.com";
 
 	recomp(&reg, pattern, cflags);
