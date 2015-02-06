@@ -8,7 +8,6 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <io.h>
 
 #define KEYLONG 20
 #ifndef EV_SYN
@@ -178,8 +177,9 @@ end:
 
 int main(int argc, char **argv)
 {
-    int i = 0;
-    if(access("./config", 0) == -1)
+	FILE *fp;
+	fp = fopen("./config", "r");
+    if(fp == NULL)
     {
 	    printf("Please correct your touchpad by drawing your touchpad !\n");
 	    getmm(argv[argc - 1]);
@@ -218,5 +218,6 @@ int main(int argc, char **argv)
 	{
 		printf("password has been added!\n");
 	}
+	fclose(fp);
     return 0;
 }
