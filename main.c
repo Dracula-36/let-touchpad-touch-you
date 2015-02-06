@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <io.h>
 
 #define KEYLONG 20
 #ifndef EV_SYN
@@ -178,37 +179,44 @@ end:
 int main(int argc, char **argv)
 {
     int i = 0;
-    printf("Please correct your touchpad by drawing your touchpad !\n");
-    getmm(argv[argc - 1]);
-    x_gap = maxco.x - minco.x;
-    y_gap = maxco.y - minco.y;
-    freopen("./config", "a+", stdout);
-    printf("x_gap=%d\n", x_gap);
-    printf("y_gap=%d\n", y_gap);
-    freopen("/dev/tty", "w", stdout);
-    printf("Please draw your picture on your touchpad !\n");
-    creatkey(argv[argc - 1]);
-   	strcpy(cmd, "unclock");
-   	save_cmd(keyword, cmd);
+    if(access("./config", 0) == -1)
+    {
+	    printf("Please correct your touchpad by drawing your touchpad !\n");
+	    getmm(argv[argc - 1]);
+	    x_gap = maxco.x - minco.x;
+	    y_gap = maxco.y - minco.y;
+	    freopen("./config", "a+", stdout);
+	    printf("x_gap=%d\n", x_gap);
+	    printf("y_gap=%d\n", y_gap);
+	    freopen("/dev/tty", "w", stdout);
+	    printf("Please draw your picture on your touchpad !\n");
+	    creatkey(argv[argc - 1]);
+	   	strcpy(cmd, "unclock");
+	   	save_cmd(keyword, cmd);
 
-   	//存储快速启动程序
-   	char ch;
-   	while( 1 ){
-   		printf("Do you want to start app quickly?(y/n)\n");
-   		scanf(" %c", &ch);
-   		if (ch == 'y')
-   		{		
- 			break;
-   		}
-	    printf("Please input the app you want to open : \n");
-	    scanf("%s", cmd);
-	    printf("Please draw a key : \n");
-	    creatkey(argv[argc-1]);
-	    save_cmd(keyword, cmd);
+	   	//存储快速启动程序
+	   	char ch;
+	   	while( 1 ){
+	   		printf("Do you want to start app quickly?(y/n)\n");
+	   		scanf(" %c", &ch);
+	   		if (ch == 'y')
+	   		{		
+	 			break;
+	   		}
+		    printf("Please input the app you want to open : \n");
+		    scanf("%s", cmd);
+		    printf("Please draw a key : \n");
+		    creatkey(argv[argc-1]);
+		    save_cmd(keyword, cmd);
+		}
+		freopen("./config", "a+", stdout);
+		printf("%d\n", -2);
+		freopen("/dev/tty", "w", stdout);
+	    readfile();
 	}
-	freopen("./config", "a+", stdout);
-	printf("%d\n", -2);
-	freopen("/dev/tty", "w", stdout);
-    readfile();
+	else
+	{
+		printf("password has been added!\n");
+	}
     return 0;
 }
