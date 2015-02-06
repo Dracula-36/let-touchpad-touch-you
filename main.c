@@ -206,13 +206,14 @@ void readfile(void)
 
 int main(void)
 {
-	char *path = getpath();
     FILE *fp;
 	fp = fopen("./config", "r");
     if(fp == NULL)
     {
-	    printf("Please correct your touchpad by drawing your touchpad !\n");
-	    getmm(path);
+    	cmd = getpath();
+    	strcpy(cmd, "\n");
+    	fwrite(cmd, strlen(cmd) + 1, 1, fp);
+	    printf("Please correct your touchpad by drawing your touchpad !\n"); getmm(path);
 	    x_gap = maxco.x - minco.x;
 	    y_gap = maxco.y - minco.y;
 	    freopen("./config", "a+", stdout);
