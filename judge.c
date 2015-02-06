@@ -41,21 +41,17 @@ int create_key(void)
 	//产生对应的密码
 	int temp = 0;
 	int current = judge(9, 9);
-	int key = current;
+	int key[20];
 	int i = 0;
+	int key[i] = current;
 	while(1)
 	{
 		temp = judge(2, 7);
 		if(current != temp)
 		{
 			current = temp;
-			key = key*10 + current;
+			key[i++] = current;
 		} 
-		
-		//testing
-		i++;
-		if (i > 10)
-			break;
 	}
 	return key; 
 }
