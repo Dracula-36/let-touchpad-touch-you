@@ -152,19 +152,27 @@ void readfile(void)
 	scanf("x_gap=%d\ny_gap=%d\n", &x, &y);
 	char current_cmd[20];
 	int current_key[KEYLONG];
-	int i=0;
-	do{
-		scanf("%d", &current_key[i]);
-	}while(current_key[i++] != -1);
-	current_key[i - 1]=0;
-	i = 0;
-	while(current_key[i]!=0)
+	while(1)
 	{
-		printf("%d\n", current_key[i++]);
+		int i=0;
+		do{
+			scanf("%d", &current_key[i]);
+			if(current_key==-2)
+			{
+				goto:end;
+			}
+		}while(current_key[i++] != -1);
+		current_key[i - 1]=0;
+		i = 0;
+		while(current_key[i]!=0)
+		{
+			printf("%d\n", current_key[i++]);
+		}
+		scanf("%s", current_cmd);
+		printf("%s\n", current_cmd);
 	}
-	scanf("%s", current_cmd);
-	printf("%s\n", current_cmd);
-	freopen("/dev/tty", "w", stdout);
+end:
+	freopen("/dev/tty", "w", stdin);
 }
 
 int main(int argc, char **argv)
@@ -184,11 +192,23 @@ int main(int argc, char **argv)
    	save_cmd(keyword, cmd);
 
    	//存储快速启动程序
-    printf("Please input the app you want to open : \n");
-    scanf("%s", cmd);
-    printf("Please draw a key : \n");
-    creatkey(argv[argc-1]);
-    save_cmd(keyword, cmd);
+   	char ch;
+   	while( 1 ){
+   		printf("Do you want to start app quickly?(y/n)\n");
+   		scanf(" %c", &ch);
+   		if (ch == 'y')
+   		{		
+ 			break;
+   		}
+	    printf("Please input the app you want to open : \n");
+	    scanf("%s", cmd);
+	    printf("Please draw a key : \n");
+	    creatkey(argv[argc-1]);
+	    save_cmd(keyword, cmd);
+	}
+	freopen("./config", "a+", stdout);
+	printf("%d\n", -2);
+	freopen("/dev/tty", "w", stdout);
     readfile();
     return 0;
 }
