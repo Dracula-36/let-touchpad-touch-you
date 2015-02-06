@@ -7,6 +7,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define KEYLONG 20
 #ifndef EV_SYN
@@ -39,12 +40,15 @@ char **names[EV_MAX + 1] = {
 	[EV_SYN] = events,				[EV_ABS] = absolutes,
 };
 
-struct coor {
+struct coor 
+{
     int x;
     int y;
 }minco ,maxco;
 
+
 int x_gap, y_gap, keyword[KEYLONG];
+char cmd[20];
 
 int  *creatkey(char *device)
 {
@@ -122,6 +126,48 @@ int judge(int x, int y)
 
 	return n;
 }	
+
+void save_cmd(int *key, char *cmd)
+{
+	freopen("./config", "a+", stdout);
+	int i=0;
+	printf("key=", );
+	while(key[i] != 0)
+	{
+		printf("%d", key[i]);
+		key[i++] = 0;
+	}
+	printf("%d%s\n", -1, cmd);
+	i = 0
+	while(cmd[i] != '\0')
+	{
+		cmd[i++] = '\0';
+	}
+	freopen("/dev/tty", "w", stdout);
+}
+
+void read(void)
+{
+	freopen("./config", "r", stdin);
+	int x,y;
+	scanf("x_gap=%d\ny_gap=%d", &x, &y);
+	char current_cmd[20];
+	int current_key[KEYLONG];
+	int i=0;
+	do{
+		scanf("%d", &current_key[i]);
+	}while(current_key[i++] != -1);
+	current_key[i]=0;
+	i = 0;
+	while(current_key[i]!=0)
+	{
+		printf("%d\n", current_key[i++]);
+	}
+	scanf("%s", current_cmd);
+	printf("%s\n", current_cmd);
+	freopen("/dev/tty", "w", stdout);
+}
+
 int main(int argc, char **argv)
 {
     int i = 0;
@@ -129,9 +175,21 @@ int main(int argc, char **argv)
     getmm(argv[argc - 1]);
     x_gap = maxco.x - minco.x;
     y_gap = maxco.y - minco.y;
+    freopen("./config", "a+", stdout);
+    printf("x_gap=%d\n", x_gap);
+    printf("y_gap=%d\n", y_gap);
+    freopen("/dev/tty", "w", stdout);
     printf("Please draw your picture on your touchpad !\n");
     creatkey(argv[argc - 1]);
-    while (keyword[i] != 0) printf("%d",keyword[i++]);
-    printf("\n");
+   	strcpy(cmd, "unclock");
+   	save_cmd(keyword, cmd);
+
+   	//存储快速启动程序
+    printf("Please input the app you want to open : \n");
+    scanf("%s", cmd);
+    printf("Please draw a key : \n");
+    creatkey(argv[argc-1]);
+    save_cmd(keyword, cmd);
+    read();
     return 0;
 }
