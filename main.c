@@ -175,15 +175,17 @@ void save_cmd(int *key, char *cmd)
 	freopen("/dev/tty", "w", stdout);
 }
 
-void readfile(void)
+char* readfile(int keyword[KEYLONG])
 {
 	freopen("./config", "r", stdin);
-	int x,y;
-	scanf("x_gap=%d\ny_gap=%d\n", &x, &y);
-	char current_cmd[20];
+	char path[20];
+	scanf("path=%s\n", path);
+	scanf("x_gap=%d\ny_gap=%d\n", &x_gap, &y_gap);
+	static char current_cmd[20];
 	int current_key[KEYLONG];
 	while(1)
 	{
+		int flag = 1;
 		int i=0;
 		do{
 			scanf("%d", &current_key[i]);
@@ -196,27 +198,41 @@ void readfile(void)
 		i = 0;
 		while(current_key[i]!=0)
 		{
-			printf("%d\n", current_key[i++]);
-		}
+			if(current_key != keyword[i])
+			{
+				flag = 0;
+				break;
+			}
+			i++;
+		}		
 		scanf("%s", current_cmd);
-		printf("%s\n", current_cmd);
+		printf("matching : %s\n", current_cmd);
+		if (flag == 1)
+		{
+			break;
+		}
 	}
-    end:freopen("/dev/tty", "w", stdin);
+end:
+	freopen("/dev/tty", "w", stdin);
+	if (flag == 0)
+	{
+		current_cmd = NULL;
+	}
+	return   current_key;
 }
 
 int main(void)
 {
     FILE *fp;
 	fp = fopen("./config", "r");
+	char *path = getpath();
     if(fp == NULL)
     {
-        char *path = getpath();
 	    printf("Please correct your touchpad by drawing your touchpad !\n");
         getmm(path);
 	    x_gap = maxco.x - minco.x;
 	    y_gap = maxco.y - minco.y;
 	    freopen("./config", "a+", stdout);
-        printf("path=%s\n", path);
 	    printf("x_gap=%d\n", x_gap);
 	    printf("y_gap=%d\n", y_gap);
 	    freopen("/dev/tty", "w", stdout);
@@ -247,7 +263,13 @@ int main(void)
 	}
 	else
 	{
-		printf("password has been added!\n");
+		char *p;
+		creatkey(path);
+		p = readfile(keyword);
+		if (p != NULL)
+		{
+			printf("%s\n", p);
+		}
 	}
 	fclose(fp);
     return 0;
