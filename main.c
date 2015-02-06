@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <dirent.h>
 
 #define KEYLONG 20
 #ifndef EV_SYN
@@ -50,6 +51,34 @@ struct coor
 int x_gap, y_gap, keyword[KEYLONG];
 char cmd[20];
 
+char *getpath(void)
+{
+    DIR *dir;
+    struct dirent *ptr;
+    static char dpath[100] = "/dev/input/";
+    char name[256] = "Unknown";
+    if ((dir = opendir("/dev/input")) == NULL)
+    {  
+        perror("Open /dev/input error...");
+        exit(1);
+    }
+    while ((ptr=readdir(dir)) != NULL)
+    {
+        if (ptr->d_type == 2)
+        {
+            char tpath[100] = "/dev/input/";
+            ioctl(open(strcat(tpath,ptr->d_name), O_RDONLY),EVIOCGNAME(sizeof(name)),name);
+            if (strcmp(name,"SynPS/2 Synaptics TouchPad") == 0)
+            {
+                strcat(dpath,ptr->d_name);
+                break;
+            }
+        }
+    }
+    closedir(dir);
+    return dpath;
+}
+
 int  *creatkey(char *device)
 {
 	int fd, rd, i, j =0, flag, m, n, current = 0;;
@@ -77,6 +106,7 @@ int  *creatkey(char *device)
     }
     end:return keyword;
 }
+
 void getmm (char *device)
 {
 	int fd, rd, i, flag, m, n;
@@ -157,9 +187,9 @@ void readfile(void)
 		int i=0;
 		do{
 			scanf("%d", &current_key[i]);
-			if(current_key==-2)
+			if(current_key [i] == -2)
 			{
-				goto:end;
+				goto end;
 			}
 		}while(current_key[i++] != -1);
 		current_key[i - 1]=0;
@@ -171,18 +201,18 @@ void readfile(void)
 		scanf("%s", current_cmd);
 		printf("%s\n", current_cmd);
 	}
-end:
-	freopen("/dev/tty", "w", stdin);
+    end:freopen("/dev/tty", "w", stdin);
 }
 
-int main(int argc, char **argv)
+int main(void)
 {
-	FILE *fp;
+	char *path = getpath();
+    FILE *fp;
 	fp = fopen("./config", "r");
     if(fp == NULL)
     {
 	    printf("Please correct your touchpad by drawing your touchpad !\n");
-	    getmm(argv[argc - 1]);
+	    getmm(path);
 	    x_gap = maxco.x - minco.x;
 	    y_gap = maxco.y - minco.y;
 	    freopen("./config", "a+", stdout);
@@ -190,7 +220,7 @@ int main(int argc, char **argv)
 	    printf("y_gap=%d\n", y_gap);
 	    freopen("/dev/tty", "w", stdout);
 	    printf("Please draw your picture on your touchpad !\n");
-	    creatkey(argv[argc - 1]);
+	    creatkey(path);
 	   	strcpy(cmd, "unclock");
 	   	save_cmd(keyword, cmd);
 
@@ -199,14 +229,14 @@ int main(int argc, char **argv)
 	   	while( 1 ){
 	   		printf("Do you want to start app quickly?(y/n)\n");
 	   		scanf(" %c", &ch);
-	   		if (ch == 'y')
+	   		if (ch == 'n')
 	   		{		
 	 			break;
 	   		}
 		    printf("Please input the app you want to open : \n");
 		    scanf("%s", cmd);
 		    printf("Please draw a key : \n");
-		    creatkey(argv[argc-1]);
+		    creatkey(path);
 		    save_cmd(keyword, cmd);
 		}
 		freopen("./config", "a+", stdout);
