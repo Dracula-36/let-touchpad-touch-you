@@ -134,7 +134,7 @@ void getmm (char *device)
 int judge(int x, int y)
 {
 	int x0 = x - minco.x, y0= y - minco.y;
-    int n;
+    int n = 0;
     if (x0 <= x_gap/3 && y0 <= y_gap/3)
 		n = 1;
 	else if (x0 <= x_gap/3 && y0 <= 2*y_gap/3)
@@ -163,7 +163,7 @@ void save_cmd(int *key, char *cmd)
 	int i=0;
 	while (key[i] != 0)
 	{
-		printf("%d", key[i]);
+		printf(" %d", key[i]);
 		key[i++] = 0;
 	}
 	printf("%d%s\n", -1, cmd);
@@ -175,7 +175,7 @@ void save_cmd(int *key, char *cmd)
 	freopen("/dev/tty", "w", stdout);
 }
 
-char* readfile(int keyword[KEYLONG])
+char* readfile(void)
 {
 	freopen("./config", "r", stdin);
 	char path[20];
@@ -183,22 +183,24 @@ char* readfile(int keyword[KEYLONG])
 	scanf("x_gap=%d\ny_gap=%d\n", &x_gap, &y_gap);
 	static char current_cmd[20];
 	int current_key[KEYLONG];
-	while(1)
+	int flag ;
+    while(1)
 	{
-		int flag = 1;
 		int i=0;
+        flag = 1;
 		do{
-			scanf("%d", &current_key[i]);
+			scanf(" %d", &current_key[i]);
 			if(current_key [i] == -2)
 			{
-				goto end;
+				flag = 0;
+                goto end;
 			}
 		}while(current_key[i++] != -1);
 		current_key[i - 1]=0;
 		i = 0;
 		while(current_key[i]!=0)
 		{
-			if(current_key != keyword[i])
+            if(current_key[i] != keyword[i])
 			{
 				flag = 0;
 				break;
@@ -216,9 +218,9 @@ end:
 	freopen("/dev/tty", "w", stdin);
 	if (flag == 0)
 	{
-		current_cmd = NULL;
+		current_cmd[0] = -1;
 	}
-	return   current_key;
+	return   current_cmd;
 }
 
 int main(void)
@@ -236,7 +238,7 @@ int main(void)
 	    printf("x_gap=%d\n", x_gap);
 	    printf("y_gap=%d\n", y_gap);
 	    freopen("/dev/tty", "w", stdout);
-	    printf("Please draw your picture on your touchpad !\n");
+	    printf("Please draw your picture for unlock on your touchpad !\n");
 	    creatkey(path);
 	   	strcpy(cmd, "unclock");
 	   	save_cmd(keyword, cmd);
@@ -259,18 +261,18 @@ int main(void)
 		freopen("./config", "a+", stdout);
 		printf("%d\n", -2);
 		freopen("/dev/tty", "w", stdout);
-	    readfile();
 	}
-	else
-	{
-		char *p;
-		creatkey(path);
-		p = readfile(keyword);
-		if (p != NULL)
-		{
-			printf("%s\n", p);
-		}
-	}
+    while(1)
+    {
+	    char *p;
+	    creatkey(path);
+	    int i =0;
+        p = readfile();
+	    if (p[0] != -1)
+	    {
+		    printf("%s\n", p);
+	    }
+    }
 	fclose(fp);
     return 0;
 }
