@@ -210,9 +210,9 @@ int main(void)
 	fp = fopen("./config", "r");
     if(fp == NULL)
     {
-    	cmd = getpath();
-    	strcpy(cmd, "\n");
-    	fwrite(cmd, strlen(cmd) + 1, 1, fp);
+    	char path[20] = getpath();
+    	strcpy(path, "\n");
+    	fwrite(path, strlen(path) + 1, 1, fp);
 	    printf("Please correct your touchpad by drawing your touchpad !\n"); getmm(path);
 	    x_gap = maxco.x - minco.x;
 	    y_gap = maxco.y - minco.y;
