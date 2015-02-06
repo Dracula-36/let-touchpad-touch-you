@@ -131,14 +131,13 @@ void save_cmd(int *key, char *cmd)
 {
 	freopen("./config", "a+", stdout);
 	int i=0;
-	printf("key=", );
-	while(key[i] != 0)
+	while (key[i] != 0)
 	{
 		printf("%d", key[i]);
 		key[i++] = 0;
 	}
 	printf("%d%s\n", -1, cmd);
-	i = 0
+	i = 0;
 	while(cmd[i] != '\0')
 	{
 		cmd[i++] = '\0';
@@ -146,18 +145,18 @@ void save_cmd(int *key, char *cmd)
 	freopen("/dev/tty", "w", stdout);
 }
 
-void read(void)
+void readfile(void)
 {
 	freopen("./config", "r", stdin);
 	int x,y;
-	scanf("x_gap=%d\ny_gap=%d", &x, &y);
+	scanf("x_gap=%d\ny_gap=%d\n", &x, &y);
 	char current_cmd[20];
 	int current_key[KEYLONG];
 	int i=0;
 	do{
 		scanf("%d", &current_key[i]);
 	}while(current_key[i++] != -1);
-	current_key[i]=0;
+	current_key[i - 1]=0;
 	i = 0;
 	while(current_key[i]!=0)
 	{
@@ -190,6 +189,6 @@ int main(int argc, char **argv)
     printf("Please draw a key : \n");
     creatkey(argv[argc-1]);
     save_cmd(keyword, cmd);
-    read();
+    readfile();
     return 0;
 }
