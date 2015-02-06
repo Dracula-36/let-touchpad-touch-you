@@ -210,13 +210,13 @@ int main(void)
 	fp = fopen("./config", "r");
     if(fp == NULL)
     {
-    	char path[20] = getpath();
-    	strcpy(path, "\n");
-    	fwrite(path, strlen(path) + 1, 1, fp);
-	    printf("Please correct your touchpad by drawing your touchpad !\n"); getmm(path);
+        char *path = getpath();
+	    printf("Please correct your touchpad by drawing your touchpad !\n");
+        getmm(path);
 	    x_gap = maxco.x - minco.x;
 	    y_gap = maxco.y - minco.y;
 	    freopen("./config", "a+", stdout);
+        printf("path=%s\n", path);
 	    printf("x_gap=%d\n", x_gap);
 	    printf("y_gap=%d\n", y_gap);
 	    freopen("/dev/tty", "w", stdout);
