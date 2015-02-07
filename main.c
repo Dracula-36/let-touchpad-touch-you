@@ -270,7 +270,10 @@ int main(void)
         p = readfile();
 	    if (p[0] != -1)
 	    {
-		    system(p);
+		    if(fork() == 0)
+		    	execlp(p, NULL);
+		    else
+		    	printf("a app has been start!\n");
 	    }
     }
 	fclose(fp);
