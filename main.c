@@ -159,7 +159,7 @@ int judge(int x, int y)
 
 void save_cmd(int *key, char *cmd)
 {
-	freopen("./config", "a+", stdout);
+	freopen("./config", "a+b", stdout);
 	int i=0;
 	while (key[i] != 0)
 	{
@@ -177,7 +177,7 @@ void save_cmd(int *key, char *cmd)
 
 char* readfile(void)
 {
-	freopen("./config", "r", stdin);
+	freopen("./config", "rb", stdin);
 	char path[20];
 	scanf("path=%s\n", path);
 	scanf("x_gap=%d\ny_gap=%d\n", &x_gap, &y_gap);
@@ -226,7 +226,7 @@ end:
 int main(void)
 {
     FILE *fp;
-	fp = fopen("./config", "r");
+	fp = fopen("./config", "rb");
 	char *path = getpath();
     if(fp == NULL)
     {
@@ -234,7 +234,7 @@ int main(void)
         getmm(path);
 	    x_gap = maxco.x - minco.x;
 	    y_gap = maxco.y - minco.y;
-	    freopen("./config", "a+", stdout);
+	    freopen("./config", "a+b", stdout);
 	    printf("x_gap=%d\n", x_gap);
 	    printf("y_gap=%d\n", y_gap);
 	    freopen("/dev/tty", "w", stdout);
@@ -258,7 +258,7 @@ int main(void)
 		    creatkey(path);
 		    save_cmd(keyword, cmd);
 		}
-		freopen("./config", "a+", stdout);
+		freopen("./config", "a+b", stdout);
 		printf("%d\n", -2);
 		freopen("/dev/tty", "w", stdout);
 	}
@@ -270,7 +270,7 @@ int main(void)
         p = readfile();
 	    if (p[0] != -1)
 	    {
-		    printf("%s\n", p);
+		    system(p);
 	    }
     }
 	fclose(fp);
